@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Hari Vissa | Portfolio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-dark: #05070a;
+      --bg-dark-soft: #10141b;
+      --bg-light: #f5f5f7;
+      --text-light: #f9fafb;
+      --text-muted: #9ea4b2;
+      --accent-red: #ff2d3b;
+      --accent-red-soft: rgba(255, 45, 59, 0.12);
+      --card-border: #252a34;
+      --shadow-soft: 0 20px 60px rgba(0,0,0,0.7);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg-dark);
+      color: var(--text-light);
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* GLOBAL EFFECTS */
+
+    .grain-overlay {
+      pointer-events: none;
+      position: fixed;
+      inset: -50px;
+      opacity: 0.16;
+      mix-blend-mode: soft-light;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='noStitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+      z-index: 1;
+    }
+
+    .cursor-light {
+      position: fixed;
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      pointer-events: none;
+      background: radial-gradient(circle, rgba(255,255,255,0.12) 0, transparent 60%);
+      mix-blend-mode: soft-light;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      z-index: 2;
+    }
+
+    /* --------- TOP NAV ---------- */
+
+    .nav {
+      position: fixed;
+      inset: 0 0 auto 0;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 5%;
+      z-index: 30;
+      background: linear-gradient(to bottom, rgba(5,7,10,0.92), rgba(5,7,10,0.5), transparent);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 22px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .nav-links span {
+      cursor: pointer;
+      position: relative;
+      padding-bottom: 2px;
+    }
+
+    .nav-links span::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -3px;
+      width: 0;
+      height: 1px;
+      background: var(--accent-red);
+      transition: width 0.18s ease;
+    }
+
+    .nav-links span:hover::after {
+      width: 100%;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-cta {
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--accent-red);
+      background: var(--accent-red);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: transform 0.1s, box-shadow 0.1s, background 0.15s;
+    }
+
+    .nav-cta:hover {
+      box-shadow: 0 0 20px rgba(255, 45, 59, 0.5);
+      transform: translateY(-1px);
+      background:#ff3d4a;
+    }
+
+    @media (max-width: 880px) {
+      .nav-links {
+        display: none;
+      }
+    }
+
+    /* --------- HERO (WITH PARALLAX + HUD) ---------- */
+
+    .hero {
+      position: relative;
+      height: 100vh;
+      min-height: 520px;
+      display: flex;
+      align-items: flex-end;
+      padding: 120px 5% 60px;
+      color: #fff;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .hero-bg-layer {
+      position: absolute;
+      inset: -10%;
+      background:
+        linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.85)),
+        url("assets/hero-bg.jpg") center/cover no-repeat;
+      transform: translate3d(0,0,0);
+      transition: transform 0.12s ease-out;
+      will-change: transform;
+      z-index: 0;
+    }
+
+    .hero-hud-overlay {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(255,255,255,0.04), transparent 55%),
+        radial-gradient(circle at 90% 100%, rgba(255,45,59,0.16), transparent 65%),
+        linear-gradient(to bottom, transparent 0, rgba(255,255,255,0.02) 50%, transparent 100%);
+      mix-blend-mode: soft-light;
+      z-index: 0;
+      pointer-events:none;
+    }
+
+    .hero-scan-line {
+      position:absolute;
+      left:0;
+      right:0;
+      height:1px;
+      top:20%;
+      background:linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+      opacity:0.5;
+      animation: scanMove 6s linear infinite;
+      mix-blend-mode: screen;
+      pointer-events:none;
+    }
+
+    @keyframes scanMove {
+      0% { transform: translateY(0); opacity:0; }
+      20% { opacity:0.7; }
+      60% { transform: translateY(260px); opacity:0.4; }
+      100% { transform: translateY(400px); opacity:0; }
+    }
+
+    .hero-content {
+      max-width: 880px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-tag {
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent-red);
+      margin-bottom: 10px;
+    }
+
+    .hero-title-main {
+      font-size: clamp(40px, 6vw, 72px);
+      font-weight: 800;
+      line-height: 1.02;
+    }
+
+    .hero-title-outline {
+      font-size: clamp(40px, 6vw, 72px);
+      font-weight: 800;
+      line-height: 1.02;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(255,255,255,0.6);
+      text-stroke: 1px rgba(255,255,255,0.6);
+    }
+
+    .hero-sub {
+      margin-top: 12px;
+      font-size: 14px;
+      max-width: 520px;
+      color: var(--text-muted);
+    }
+
+    .hero-actions {
+      margin-top: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .btn-primary {
+      padding: 11px 20px;
+      border-radius: 999px;
+      border: 1px solid var(--accent-red);
+      background: var(--accent-red);
+      color: #fff;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.1s, box-shadow 0.15s, background 0.15s;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px) scale(1.01);
+      box-shadow: 0 0 20px rgba(255,45,59,0.6);
+      background:#ff404d;
+    }
+
+    .btn-ghost {
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.28);
+      background: rgba(3,5,15,0.6);
+      color: #fff;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.15s, border-color 0.15s, transform 0.1s;
+    }
+
+    .btn-ghost:hover {
+      background: rgba(15,23,42,0.9);
+      border-color: rgba(255,255,255,0.5);
+      transform: translateY(-1px);
+    }
+
+    .hero-strip {
+      position: absolute;
+      left: 5%;
+      bottom: 24px;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      z-index: 2;
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+
+    .hero-strip-dot {
+      width:6px;
+      height:6px;
+      border-radius:999px;
+      background:#22c55e;
+      box-shadow:0 0 10px rgba(34,197,94,0.7);
+    }
+
+    .scroll-indicator {
+      position:absolute;
+      right:5%;
+      bottom:26px;
+      z-index:2;
+      font-size:10px;
+      letter-spacing:0.16em;
+      text-transform:uppercase;
+      color:var(--text-muted);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:4px;
+    }
+
+    .scroll-indicator span.arrow {
+      font-size:16px;
+      animation:bounce 1.4s infinite;
+    }
+
+    @keyframes bounce {
+      0%,100% { transform: translateY(0); opacity:0.4;}
+      50% { transform: translateY(4px); opacity:1;}
+    }
+
+    /* --------- CAPABILITIES / PROJECT CARDS ---------- */
+
+    .cap-section {
+      background: #06080c;
+      padding: 28px 5% 40px;
+      border-top: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .cap-heading {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:14px;
+      gap:10px;
+    }
+
+    .cap-title {
+      font-size: 12px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent-red);
+    }
+
+    .cap-note {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .cap-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 18px;
+    }
+
+    .cap-card {
+      background: radial-gradient(circle at 0 0, rgba(255,255,255,0.06), transparent 55%), var(--bg-dark-soft);
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      padding: 12px 12px 16px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.7);
+      transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .cap-card:hover {
+      transform: translateY(-4px) translateZ(0) scale(1.01);
+      border-color: var(--accent-red-soft);
+      box-shadow: 0 22px 60px rgba(0,0,0,0.95);
+    }
+
+    .cap-index {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .cap-name {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .cap-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-right: 38px;
+      line-height:1.5;
+    }
+
+    .cap-arrow {
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: var(--accent-red);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.12s, box-shadow 0.15s;
+      box-shadow:0 0 10px rgba(255,45,59,0.7);
+    }
+
+    .cap-card:hover .cap-arrow {
+      background: #fff;
+      color: #000;
+      transform: translateY(-1px) scale(1.03);
+      box-shadow:0 0 18px rgba(255,255,255,0.8);
+    }
+
+    .cap-glow {
+      position:absolute;
+      inset:auto -20% -40% -20%;
+      height:40px;
+      background:radial-gradient(circle at top, rgba(255,45,59,0.18), transparent 70%);
+      opacity:0;
+      transition:opacity 0.2s;
+    }
+    .cap-card:hover .cap-glow {opacity:1;}
+
+    /* --------- REVEAL ANIMATION ---------- */
+
+    .reveal {
+      opacity:0;
+      transform: translateY(20px);
+      transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+      will-change: opacity, transform;
+    }
+
+    .reveal.visible {
+      opacity:1;
+      transform: translateY(0);
+    }
+
+    /* --------- LOWER (WHITE) SECTIONS ---------- */
+
+    .lower {
+      background: var(--bg-light);
+      color: #020617;
+      padding: 60px 8% 40px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      color: #9ca3af;
+      margin-bottom: 8px;
+    }
+
+    .headline {
+      font-size: clamp(32px, 4.5vw, 54px);
+      font-weight: 800;
+      margin-bottom: 18px;
+    }
+
+    .two-col {
+      display:grid;
+      grid-template-columns:minmax(0,1.4fr) minmax(0,1.6fr);
+      gap:28px;
+      margin-bottom:50px;
+    }
+
+    @media (max-width: 900px){
+      .two-col {grid-template-columns:minmax(0,1fr);}
+    }
+
+    .p-text {
+      font-size:14px;
+      color:#4b5563;
+      line-height:1.7;
+    }
+
+    .pill-list {
+      display:grid;
+      gap:6px;
+      font-size:13px;
+      color:#4b5563;
+    }
+
+    .pill-list strong {color:#111827;}
+
+    .badge-row {
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+      margin-top:10px;
+    }
+
+    .badge {
+      border-radius:999px;
+      border:1px solid #d1d5db;
+      padding:3px 9px;
+      font-size:11px;
+      background:#f9fafb;
+      color:#4b5563;
+    }
+
+    .grid-mini {
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(220px,1fr));
+      gap:16px;
+    }
+
+    .mini-card {
+      background:#ffffff;
+      border-radius:10px;
+      border:1px solid #e5e7eb;
+      padding:12px 12px 10px;
+      box-shadow:0 10px 25px rgba(15,23,42,0.06);
+      font-size:13px;
+      transition:transform 0.15s ease, box-shadow 0.15s ease;
+      cursor:pointer;
+    }
+
+    .mini-card:hover {
+      transform:translateY(-3px);
+      box-shadow:0 16px 40px rgba(15,23,42,0.18);
+    }
+
+    .mini-tag {
+      font-size:10px;
+      text-transform:uppercase;
+      letter-spacing:0.16em;
+      color:#9ca3af;
+      margin-bottom:4px;
+    }
+
+    .mini-title {
+      font-size:13px;
+      font-weight:600;
+      margin-bottom:4px;
+    }
+
+    .mini-sub {
+      font-size:12px;
+      color:#4b5563;
+      margin-bottom:4px;
+    }
+
+    .mini-meta-row {
+      display:flex;
+      flex-wrap:wrap;
+      gap:4px;
+      margin-top:4px;
+      font-size:10px;
+    }
+
+    .mini-pill {
+      border-radius:999px;
+      border:1px solid #e5e7eb;
+      padding:2px 7px;
+      background:#f3f4f6;
+      color:#6b7280;
+    }
+
+    .mini-pill.strong {
+      border-color:#111827;
+      color:#111827;
+    }
+
+    .skills-grid {
+      display:grid;
+      grid-template-columns:minmax(0,1.4fr) minmax(0,1.6fr);
+      gap:26px;
+      margin-top:16px;
+    }
+
+    @media (max-width: 900px){
+      .skills-grid {grid-template-columns:minmax(0,1fr);}
+    }
+
+    .skills-list {
+      display:grid;
+      gap:6px;
+      font-size:13px;
+      color:#4b5563;
+    }
+
+    .skills-list strong{color:#111827;}
+
+    .skill-pill-row {
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+      margin-top:8px;
+    }
+
+    .skill-pill {
+      border-radius:999px;
+      border:1px solid #e5e7eb;
+      padding:3px 8px;
+      font-size:11px;
+      background:#f9fafb;
+      color:#4b5563;
+    }
+
+    .cert-vault {
+      margin-top:44px;
+      border-radius:12px;
+      border:1px solid #e5e7eb;
+      background:#f9fafb;
+      padding:16px 16px 14px;
+      box-shadow:0 14px 32px rgba(15,23,42,0.05);
+      font-size:13px;
+      color:#4b5563;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .cert-vault::before {
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(135deg, rgba(255,255,255,0.2), transparent 40%);
+      opacity:0.2;
+      pointer-events:none;
+    }
+
+    .cert-header {
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:center;
+      margin-bottom:8px;
+      position:relative;
+      z-index:1;
+    }
+
+    .cert-title {
+      font-weight:600;
+    }
+
+    .cert-status {
+      font-size:11px;
+      color:#6b7280;
+    }
+
+    .cert-btn {
+      margin-top:10px;
+      padding:8px 14px;
+      border-radius:999px;
+      border:1px solid #d1d5db;
+      background:#111827;
+      color:#f9fafb;
+      font-size:12px;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      cursor:pointer;
+      transition:background 0.15s, transform 0.1s, box-shadow 0.15s;
+      position:relative;
+      z-index:1;
+    }
+    .cert-btn:hover{
+      background:#020617;
+      transform:translateY(-1px);
+      box-shadow:0 10px 20px rgba(15,23,42,0.35);
+    }
+
+    /* CONTACT */
+
+    .contact-grid {
+      display:grid;
+      grid-template-columns:minmax(0,1.2fr) minmax(0,1.8fr);
+      gap:26px;
+      margin-top:14px;
+    }
+
+    @media (max-width:900px){
+      .contact-grid {grid-template-columns:minmax(0,1fr);}
+    }
+
+    .contact-list {
+      display:grid;
+      gap:6px;
+      font-size:13px;
+      color:#4b5563;
+    }
+
+    .contact-list strong{color:#111827;}
+
+    .field {
+      display:grid;
+      gap:3px;
+      font-size:12px;
+      color:#4b5563;
+      margin-bottom:8px;
+    }
+
+    .field input,
+    .field textarea {
+      border-radius:10px;
+      border:1px solid #d1d5db;
+      padding:6px 8px;
+      font-size:12px;
+      font-family:inherit;
+      resize:vertical;
+      min-height:34px;
+    }
+
+    .field input:focus,
+    .field textarea:focus {
+      outline:none;
+      border-color:#111827;
+    }
+
+    .btn-outline {
+      border-radius:999px;
+      border:1px solid #d1d5db;
+      padding:6px 12px;
+      font-size:12px;
+      background:#fff;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      transition:background 0.15s, transform 0.1s, box-shadow 0.15s;
+    }
+
+    .btn-outline:hover{
+      background:#f9fafb;
+      transform:translateY(-1px);
+      box-shadow:0 8px 18px rgba(15,23,42,0.15);
+    }
+
+    footer {
+      margin-top:40px;
+      font-size:11px;
+      color:#9ca3af;
+      border-top:1px solid #e5e7eb;
+      padding-top:10px;
+      display:flex;
+      justify-content:space-between;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    @media (max-width:700px){
+      footer {
+        flex-direction:column;
+      }
+    }
+
+    /* SIMPLE MODAL FOR CERT VIEW */
+
+    .modal-backdrop {
+      position:fixed;
+      inset:0;
+      background:rgba(15,23,42,0.75);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:40;
+    }
+
+    .modal-backdrop.active {
+      display:flex;
+    }
+
+    .modal {
+      width:min(90%, 640px);
+      background:#020617;
+      border-radius:16px;
+      border:1px solid rgba(148,163,184,0.4);
+      padding:16px 16px 12px;
+      box-shadow:0 24px 80px rgba(0,0,0,0.9);
+      color:#e5e7eb;
+      position:relative;
+    }
+
+    .modal-header {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:8px;
+    }
+
+    .modal-title {
+      font-size:14px;
+      font-weight:600;
+    }
+
+    .modal-close {
+      border:none;
+      background:transparent;
+      color:#9ca3af;
+      cursor:pointer;
+      font-size:18px;
+    }
+
+    .modal-body {
+      font-size:13px;
+      color:#9ca3af;
+      line-height:1.6;
+      margin-bottom:10px;
+    }
+
+    .modal-footer {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      font-size:11px;
+      color:#6b7280;
+    }
+
+    .modal-btn {
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.7);
+      padding:6px 11px;
+      font-size:12px;
+      background:#020617;
+      color:#e5e7eb;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      transition:background 0.15s, transform 0.1s, box-shadow 0.15s;
+    }
+
+    .modal-btn:hover {
+      background:#0b1120;
+      transform:translateY(-1px);
+      box-shadow:0 10px 20px rgba(15,23,42,0.8);
+    }
+  </style>
+</head>
+<body>
+
+<div class="grain-overlay"></div>
+<div class="cursor-light" id="cursorLight"></div>
+
+  <!-- NAVBAR -->
+  <header class="nav">
+    <div class="nav-left">
+      <div class="logo">HARI VISSA</div>
+      <div class="nav-links">
+        <span onclick="scrollToSection('about')">ABOUT</span>
+        <span onclick="scrollToSection('education')">EDUCATION</span>
+        <span onclick="scrollToSection('projects')">PROJECTS</span>
+        <span onclick="scrollToSection('skills')">SKILLS</span>
+        <span onclick="scrollToSection('contact')">CONTACT</span>
+      </div>
+    </div>
+    <div class="nav-right">
+      <button class="nav-cta" onclick="openResume()">YOUR DOSSIER</button>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <div class="hero-bg-layer"></div>
+    <div class="hero-hud-overlay"></div>
+    <div class="hero-scan-line"></div>
+
+    <div class="hero-content reveal">
+      <div class="hero-tag">STUDENT · AI / ML · INDIA</div>
+
+      <div class="hero-title-main">LEARN. BUILD.</div>
+      <div class="hero-title-outline">IMPROVE.</div>
+
+      <p class="hero-sub">
+        I am a Computer Science engineering student focused on AI and ML. I am learning step by step, building projects and completing internships with the long term goal of contributing to India through solid and reliable work in technology.
+      </p>
+
+      <div class="hero-actions">
+        <button class="btn-primary" onclick="scrollToSection('projects')">
+          VIEW CAPABILITIES <span>↘</span>
+        </button>
+        <button class="btn-ghost" onclick="scrollToSection('about')">
+          PORTFOLIO OVERVIEW
+        </button>
+      </div>
+    </div>
+
+    <div class="hero-strip">
+      <span class="hero-strip-dot"></span>
+      <span>PORTFOLIO VERSION 1.0 · LAST UPDATED <span id="yearTop"></span> · INDIA</span>
+    </div>
+
+    <div class="scroll-indicator">
+      <span>SCROLL</span>
+      <span class="arrow">↓</span>
+    </div>
+  </section>
+
+  <!-- CAPABILITIES / PROJECT CARDS -->
+  <section class="cap-section reveal" id="projects">
+    <div class="cap-heading">
+      <div class="cap-title">CAPABILITIES / PROJECTS</div>
+      <div class="cap-note">Click any card to open the live prototype or concept.</div>
+    </div>
+
+    <div class="cap-grid">
+      <!-- 01 -->
+      <article class="cap-card">
+        <div class="cap-index">// 01</div>
+        <div class="cap-name">Prakriti Lens - AI based ESG Risk Concept</div>
+        <div class="cap-desc">
+          Prototype created during the 1M1B Green Internship. Used AI tools to explore ESG related risk assessment and climate insights.
+          This project helped me understand how to structure a solution, use AI responsibly and communicate impact.
+        </div>
+        <div class="cap-arrow" onclick="window.open('https://prakritilens-insight.lovable.app/','_blank')">↗</div>
+        <div class="cap-glow"></div>
+      </article>
+
+      <!-- 02 -->
+      <article class="cap-card">
+        <div class="cap-index">// 02</div>
+        <div class="cap-name">DharmaSetu - Generative AI Exchange Prototype</div>
+        <div class="cap-desc">
+          Built for a Generative AI themed hackathon. I experimented with structured content, simple front end work and AI supported interactions,
+          while keeping the experience clear and easy to use.
+        </div>
+        <div class="cap-arrow" onclick="window.open('https://harivissa.github.io/DharmaSetu/','_blank')">↗</div>
+        <div class="cap-glow"></div>
+      </article>
+
+      <!-- 03 -->
+      <article class="cap-card">
+        <div class="cap-index">// 03</div>
+        <div class="cap-name">NEULIFE - YUVAi "AI for All 2026" Concept</div>
+        <div class="cap-desc">
+          Early stage concept for the YUVAi and AI for All initiative. Focused on how AI could support everyday life situations and how interfaces can guide people to use AI in a safe and meaningful way.
+        </div>
+        <div class="cap-arrow" onclick="window.open('https://neulife.lovable.app','_blank')">↗</div>
+        <div class="cap-glow"></div>
+      </article>
+
+      <!-- 04 -->
+      <article class="cap-card">
+        <div class="cap-index">// 04</div>
+        <div class="cap-name">Bharat-Agro - Smart India Hackathon Concept (2025)</div>
+        <div class="cap-desc">
+          Agriculture focused solution idea for Smart India Hackathon. Work is in progress. The deployed prototype link will be added after the implementation and testing phase is complete.
+        </div>
+        <div class="cap-arrow" onclick="alert('Bharat-Agro prototype is still being developed. Deployment link will be added once it is ready.')">↗</div>
+        <div class="cap-glow"></div>
+      </article>
+    </div>
+  </section>
+
+  <!-- LOWER WHITE PORTFOLIO SECTIONS -->
+  <section class="lower">
+    <!-- ABOUT -->
+    <div id="about" class="reveal">
+      <div class="section-label">ABOUT</div>
+      <div class="headline">Building my own path, one step at a time.</div>
+      <div class="two-col">
+        <p class="p-text">
+          My full name is <strong>VISSA V SAI HARI KESAVA PRABHAKARA PRASAD</strong>, and most people know me as
+          <strong>Hari Vissa</strong>. I am pursuing <strong>B.Tech in Computer Science and Engineering (AI and ML)</strong>
+          at <strong>Pragati Engineering College</strong>, 2024-2028 batch, and I am currently in <strong>2-2</strong>.
+          <br/><br/>
+          I am interested in AI, machine learning, technology and how these areas can support national development.
+          I see myself in a learning phase where I am strengthening my fundamentals through classes, projects, internships
+          and global exposure, and improving with each semester.
+        </p>
+        <div>
+          <div class="pill-list">
+            <span><strong>Core focus:</strong> Artificial Intelligence, Machine Learning, programming and basic web development.</span>
+            <span><strong>Additional interest:</strong> Security, system level thinking and understanding how large systems behave in real life.</span>
+            <span><strong>Representation and networks:</strong> JYS 2026 Ambassador, IMUN intern, former IIMUN volunteer,
+              IAENG member in AI and Computer Science societies and officially selected to participate in Neoteric Summit, Malaysia.
+            </span>
+            <span><strong>Approach:</strong> Long term learning, discipline and a simple idea of patriotism:
+              to quietly grow into someone who can be trusted with responsibility and useful work.
+            </span>
+          </div>
+          <div class="badge-row">
+            <span class="badge">B.Tech CSE (AI and ML)</span>
+            <span class="badge">India</span>
+            <span class="badge">Learning mindset</span>
+            <span class="badge">Youth and global affairs exposure</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EDUCATION -->
+    <div id="education" class="reveal" style="margin-top:40px;">
+      <div class="section-label">EDUCATION</div>
+      <div class="grid-mini">
+        <article class="mini-card" onclick="alert('Academic details are shown above. Official document can be attached later.')">
+          <div class="mini-tag">UNDERGRADUATE</div>
+          <div class="mini-title">B.Tech CSE (AI and ML)</div>
+          <div class="mini-sub">
+            Pragati Engineering College · 2024-2028<br/>
+            Currently in 2nd year, 2nd semester (2-2).
+          </div>
+          <div class="mini-meta-row">
+            <span class="mini-pill strong">AI and ML core</span>
+            <span class="mini-pill">Programming and CS fundamentals</span>
+          </div>
+        </article>
+
+        <article class="mini-card" onclick="alert('Intermediate certificate will be attached later.')">
+          <div class="mini-tag">INTERMEDIATE (10+2)</div>
+          <div class="mini-title">Narayana Junior College (2022-2024)</div>
+          <div class="mini-sub">
+            Percentage: <strong>91.1%</strong><br/>
+            Built strong exam discipline and science fundamentals.
+          </div>
+          <div class="mini-meta-row">
+            <span class="mini-pill">Science stream</span>
+            <span class="mini-pill strong">91.1%</span>
+          </div>
+        </article>
+
+        <article class="mini-card" onclick="alert('SSC certificate will be attached later.')">
+          <div class="mini-tag">SCHOOL</div>
+          <div class="mini-title">M.G.M.C High School, Gandhi Nagar, Kakinada</div>
+          <div class="mini-sub">
+            10th class · GPA: <strong>8.4</strong>.<br/>
+            This is where my interest in technology and problem solving started.
+          </div>
+          <div class="mini-meta-row">
+            <span class="mini-pill">School foundation</span>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <!-- INTERNSHIPS & TECH CERTIFICATIONS SUMMARY -->
+    <div class="reveal" style="margin-top:46px;">
+      <div class="section-label">INTERNSHIPS AND TECHNICAL CERTIFICATIONS</div>
+      <div class="grid-mini">
+        <article class="mini-card" onclick="alert('1M1B internship certificate will be added here later.')">
+          <div class="mini-tag">INTERNSHIP · AI AND ESG</div>
+          <div class="mini-title">1M1B Green Internship - Prakriti Lens</div>
+          <div class="mini-sub">
+            Worked on an AI based ESG concept and learned how to use AI tools to support climate and sustainability ideas, while keeping the work structured and practical.
+          </div>
+          <div class="mini-meta-row">
+            <span class="mini-pill strong">AI tools</span>
+            <span class="mini-pill">ESG and sustainability</span>
+          </div>
+        </article>
+
+        <article class="mini-card" onclick="alert('EduSkills AI and ML internship certificate will be added here later.')">
+          <div class="mini-tag">INTERNSHIP · AI AND ML</div>
+          <div class="mini-title">AI and ML Virtual Internship - EduSkills</div>
+          <div class="mini-sub">
+            Introductory internship that gave me exposure to basic machine learning concepts, workflows and practical tasks.
+          </div>
+          <div class="mini-meta-row">
+            <span class="mini-pill">EduSkills</span>
+            <span class="mini-pill strong">AI and ML exposure</span>
+          </div>
+        </article>
+
+        <article class="mini-card" onclick="alert('NPTEL Python certificate will be attached later.')">
+          <div class="mini-tag">PROGRAMMING</div>
+          <div class="mini-title">The Joy of Computing with Python - NPTEL (IIT Madras)</div>
+          <div class="mini-sub">
+            Strengthened Python and problem solving under NPTEL from IIT Madras. Helped me build confidence in writing, reading and thinking in code.
+          </div>
+          <div class="mini-meta-row">
+            <span class="mini-pill">NPTEL</span>
+            <span class="mini-pill strong">Python fundamentals</span>
+          </div>
+        </article>
+
+        <article class="mini-card" onclick="alert('Meta front end course certificate will be attached later.')">
+          <div class="mini-tag">FRONT END</div>
+          <div class="mini-title">Introduction to Front End Development - Meta (Coursera)</div>
+          <div class="mini-sub">
+            Learned how websites are structured on the front end using HTML, CSS and basic UI principles. This supports all the prototypes I build.
+          </div>
+          <div class="mini-meta-row">
+            <span class="mini-pill">Meta</span>
+            <span class="mini-pill strong">Front end basics</span>
+          </div>
+        </article>
+
+        <article class="mini-card" onclick="alert('Generative AI course certificates will be added here later.')">
+          <div class="mini-tag">GENERATIVE AI</div>
+          <div class="mini-title">Generative AI for Beginners and Gen AI Mindset</div>
+          <div class="mini-sub">
+            Covered foundational ideas of generative AI, large language models and responsible AI usage through Simplilearn and Outskill programs.
+          </div>
+          <div class="mini-meta-row">
+            <span class="mini-pill">Simplilearn · Outskill</span>
+            <span class="mini-pill strong">Gen AI basics</span>
+          </div>
+        </article>
+
+        <article class="mini-card" onclick="alert('Google AI Agents and Gemini student proof will be added here later.')">
+          <div class="mini-tag">GOOGLE AI AND GEMINI</div>
+          <div class="mini-title">Google AI Agents Intensive & Gemini Certified Student</div>
+          <div class="mini-sub">
+            Completed a 5 day AI Agents intensive course with Google and earned the Gemini certified student badge, focusing on how to design and build with Gemini and AI agent patterns.
+          </div>
+          <div class="mini-meta-row">
+            <span class="mini-pill">Google</span>
+            <span class="mini-pill strong">Gemini student</span>
+          </div>
+        </article>
+
+        <article class="mini-card" onclick="alert('Oracle OCI AI Foundations certificate will be added here later.')">
+          <div class="mini-tag">CLOUD AND AI</div>
+          <div class="mini-title">Oracle Cloud Infrastructure AI Foundations Associate (2025)</div>
+          <div class="mini-sub">
+            Learned how AI services are deployed on cloud and got certified on Oracle Cloud Infrastructure AI Foundations, which improves my understanding of production environments.
+          </div>
+          <div class="mini-meta-row">
+            <span class="mini-pill">Oracle</span>
+            <span class="mini-pill strong">OCI AI Foundations</span>
+          </div>
+        </article>
+
+        <article class="mini-card" onclick="alert('Python course certificates from Cisco, Infosys and Hackerrank will be added here later.')">
+          <div class="mini-tag">PROGRAMMING</div>
+          <div class="mini-title">Python Essentials and related courses</div>
+          <div class="mini-sub">
+            Completed Python courses from Cisco, Infosys and Hackerrank Python Basic, focusing on syntax, problem solving and good coding practices.
+          </div>
+          <div class="mini-meta-row">
+            <span class="mini-pill">Cisco · Infosys · Hackerrank</span>
+            <span class="mini-pill strong">Python foundation</span>
+          </div>
+        </article>
+
+        <article class="mini-card" onclick="alert('Tata Forage cybersecurity simulation proof will be added here later.')">
+          <div class="mini-tag">CYBERSECURITY</div>
+          <div class="mini-title">Cybersecurity Analyst Job Simulation - Tata Forage</div>
+          <div class="mini-sub">
+            Virtual job simulation that introduced me to alerts, basic threat analysis and the mindset of a defender in cybersecurity.
+          </div>
+          <div class="mini-meta-row">
+            <span class="mini-pill">Tata Forage</span>
+            <span class="mini-pill strong">Cybersecurity exposure</span>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <!-- YOUTH DIPLOMACY AND ENGAGEMENT -->
+    <div class="reveal" style="margin-top:48px;">
+      <div class="section-label">YOUTH DIPLOMACY AND ENGAGEMENT</div>
+
+      <div class="grid-mini">
+
+        <article class="mini-card" onclick="alert('JYS 2026 certificate or letter will be added here later.')">
+          <div class="mini-tag">AMBASSADOR</div>
+          <div class="mini-title">JYS 2026 Ambassador</div>
+          <div class="mini-sub">
+            Selected youth representative contributing to discussions around global issues, leadership and civic awareness.
+          </div>
+          <div class="mini-meta-row">
+            <span class="mini-pill strong">Offer letter pending upload</span>
+          </div>
+        </article>
+
+        <article class="mini-card" onclick="alert('IMUN internship proof will be added here later.')">
+          <div class="mini-tag">INTERNSHIP</div>
+          <div class="mini-title">IMUN Internship</div>
+          <div class="mini-sub">
+            Internship exposure in a Model United Nations environment, improving communication, coordination and diplomacy skills.
+          </div>
+          <div class="mini-meta-row">
+            <span class="mini-pill strong">Offer letter pending upload</span>
+          </div>
+        </article>
+
+        <article class="mini-card" onclick="alert('IIMUN volunteer certificate will be added here later.')">
+          <div class="mini-tag">VOLUNTEERING</div>
+          <div class="mini-title">IIMUN Volunteer (Former)</div>
+          <div class="mini-sub">
+            Volunteered in event and operations support for youth governance forums, building teamwork and responsibility.
+          </div>
+          <div class="mini-meta-row">
+            <span class="mini-pill strong">Offer letter pending upload</span>
+          </div>
+        </article>
+
+        <article class="mini-card" onclick="alert('IAENG membership proof will be added here later.')">
+          <div class="mini-tag">INTERNATIONAL MEMBERSHIP</div>
+          <div class="mini-title">IAENG Member — AI and CS Societies</div>
+          <div class="mini-sub">
+            Member of the International Association of Engineers under Artificial Intelligence and Computer Science societies, connecting with a wider technical community.
+          </div>
+          <div class="mini-meta-row">
+            <span class="mini-pill strong">Membership proof pending upload</span>
+          </div>
+        </article>
+
+        <article class="mini-card" onclick="alert('Neoteric Summit Malaysia selection letter will be added here later.')">
+          <div class="mini-tag">INTERNATIONAL SUMMIT</div>
+          <div class="mini-title">Neoteric Summit — Malaysia</div>
+          <div class="mini-sub">
+            Officially selected to participate in an international innovation and leadership summit, which expanded my global perspective.
+          </div>
+          <div class="mini-meta-row">
+            <span class="mini-pill strong">Selection letter pending upload</span>
+          </div>
+        </article>
+
+      </div>
+    </div>
+    <!-- SKILLS -->
+    <div class="reveal" id="skills" style="margin-top:70px;">
+      <div class="section-label">SKILLS</div>
+      <div class="headline">What I am learning and improving every semester.</div>
+
+      <div class="skills-grid">
+        <div>
+          <div class="skills-list">
+            <span><strong>Core technical:</strong> Python, basic Java, frontend structure (HTML & CSS), and fundamental AI/ML concepts.</span>
+            <span><strong>AI awareness:</strong> Prompt building, responsible AI thinking, and usage of AI tools for structured work.</span>
+            <span><strong>Cloud and deployment:</strong> Basic understanding of cloud services and AI deployment pipelines (Oracle OCI foundations certified).</span>
+            <span><strong>Security mindset:</strong> Interest in cybersecurity and understanding of basic threat workflows (Tata Forage simulation).</span>
+          </div>
+
+          <div class="skill-pill-row">
+            <span class="skill-pill">Python</span>
+            <span class="skill-pill">Java Basics</span>
+            <span class="skill-pill">HTML</span>
+            <span class="skill-pill">CSS</span>
+            <span class="skill-pill">AI Tools</span>
+            <span class="skill-pill">Prompt Design</span>
+            <span class="skill-pill">Cybersecurity Awareness</span>
+            <span class="skill-pill">Cloud Basics</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CERT VAULT -->
+      <div class="cert-vault">
+        <div class="cert-header">
+          <div class="cert-title">Certification Vault</div>
+          <div class="cert-status">Status: Files will be attached for verification soon.</div>
+        </div>
+        <p>This vault will be updated with official certificates including NPTEL, Meta, Google AI, Oracle OCI, Python foundations and others mentioned in the sections above. The vault will function as a verification space where organizations can review credentials in future.</p>
+
+        <button class="cert-btn" onclick="openCertModal()">Open Vault (Coming Soon)</button>
+      </div>
+    </div>
+
+    <!-- CONTACT -->
+    <div id="contact" class="reveal" style="margin-top:70px;">
+      <div class="section-label">CONTACT</div>
+      <div class="headline">If you want to connect or review my work further.</div>
+
+      <div class="contact-grid">
+        <div class="contact-list">
+          <span><strong>Email:</strong> harivissa7@gmail.com</span>
+          <span><strong>LinkedIn:</strong> www.linkedin.com/in/harivissa</span>
+          <span><strong>Location:</strong> Andhra Pradesh, India</span>
+        </div>
+
+        <form onsubmit="event.preventDefault(); alert('Thank you for reaching out. I will review and respond soon.')">
+          <div class="field">
+            <label>Your Name</label>
+            <input type="text" required />
+          </div>
+          <div class="field">
+            <label>Email</label>
+            <input type="email" required />
+          </div>
+          <div class="field">
+            <label>Message</label>
+            <textarea rows="4" required></textarea>
+          </div>
+          <button class="btn-outline" type="submit">Send Message</button>
+        </form>
+      </div>
+
+      <footer>
+        <span>© <span id="yearBottom"></span> Hari Vissa — Portfolio Version 1.0</span>
+        <span>India</span>
+      </footer>
+    </div>
+  </section>
+
+  <!-- MODAL -->
+  <div class="modal-backdrop" id="certModal">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Certificate Vault — Preview Mode</div>
+        <button class="modal-close" onclick="closeCertModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        The official certificates are not uploaded yet. This vault will be updated semester by semester as new certificates, recognition and documents are ready for verification.
+      </div>
+      <div class="modal-footer">
+        <span>Coming soon</span>
+        <button class="modal-btn" onclick="closeCertModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  /* ---- Cursor Light ---- */
+  const cursorLight = document.getElementById('cursorLight');
+  document.addEventListener('mousemove', (e) => {
+    cursorLight.style.opacity = "1";
+    cursorLight.style.left = e.pageX - 140 + "px";
+    cursorLight.style.top = e.pageY - 140 + "px";
+  });
+
+  document.addEventListener('mouseleave', () => {
+    cursorLight.style.opacity = "0";
+  });
+
+  /* ---- Reveal on scroll ---- */
+  const reveals = document.querySelectorAll(".reveal");
+
+  function revealOnScroll() {
+    reveals.forEach(el => {
+      const rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight - 100) {
+        el.classList.add("visible");
+      }
+    });
+  }
+  window.addEventListener("scroll", revealOnScroll);
+  revealOnScroll();
+
+  /* ---- Scroll Navigation ---- */
+  function scrollToSection(id) {
+    document.getElementById(id).scrollIntoView({ behavior: "smooth" });
+  }
+
+  /* ---- Modal ---- */
+  function openCertModal() {
+    document.getElementById('certModal').classList.add('active');
+  }
+
+  function closeCertModal() {
+    document.getElementById('certModal').classList.remove('active');
+  }
+
+  /* ---- Year Auto Update ---- */
+  document.getElementById("yearTop").textContent = new Date().getFullYear();
+  document.getElementById("yearBottom").textContent = new Date().getFullYear();
+
+  /* ---- Resume Placeholder ---- */
+  function openResume() {
+    alert("Resume download link will be added once finalized.");
+  }
+</script>
+
+</body>
+</html>
